@@ -1,0 +1,94 @@
+server:
+  port: 888
+  servlet:
+    context-path: /due
+# 注释
+spring:
+  thymeleaf:
+    cache: false
+    encoding: UTF-8
+    mode: HTML5
+    prefix: classpath:/templates/
+    servlet:
+      content-type: text/html
+    suffix: .html
+  resources:
+    chain:
+      strategy:
+        content:
+          enabled: true
+          paths: /**
+  servlet:
+    multipart:
+      max-file-size: 100MB
+      max-request-size: 100MB
+  jackson:
+    date-format: yyyy-MM-dd HH:mm:ss
+    time-zone: GMT+8
+  datasource:
+    name: test
+    url: jdbc:mysql://127.0.0.1:3306/due_admission?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull
+    username: root
+    password: sa0230**
+    type: com.alibaba.druid.pool.DruidDataSource
+    driver-class-name: com.mysql.jdbc.Driver
+    filters: stat
+    maxActive: 20
+    initialSize: 1
+    maxWait: 6000
+    minIdle: 1
+    timeBetweenEvictionRunsMillis: 60000
+    minEvictableIdleTimeMillis: 300000
+    validationQuery: select 'x'
+    testWhileIdle: true
+    testOnBorrow: false
+    testOnReturn: false
+    poolPreparedStatements: true
+    maxOpenPreparedStatements: 20
+  mvc:
+    static-path-pattern: /static/**
+  mail:
+    host: smtp.gmail.com
+    port: 465
+    username: zzuisa.cn@gmail.com
+    password: qipubzbmxxpegybw
+    #spring.mail.protocol=smtps
+    properties:
+      mail:
+        smtp:
+          ssl:
+            enable: true
+    #username: zzuisa.cn@gmmybatis-plus:
+  configuration:
+    call-setters-on-nulls: true
+  mapperLocations: classpath*:cn/zzuisa/mapper/xml/*Mapper.xml
+  typeAliasesPackage: cn.zzuisa.entity
+  global-config:
+    #主键类型  0:"数据库ID自增", 1:"用户输入ID",2:"全局唯一ID (数字类型唯一ID)", 3:"全局唯一ID UUID";
+    id-type: 2
+    #字段策略 0:"忽略判断",1:"非 NULL 判断"),2:"非空判断"
+#    field-strategy: 2
+    #驼峰下划线转换
+    db-column-underline: true
+    #刷新mapper 调试神器
+    refresh-mapper: true
+    #数据库大写下划线转换
+    capital-mode: true
+    #序列接口实现类配置,不在推荐使用此方式进行配置,请使用自定义bean注入
+    key-generator: com.baomidou.mybatisplus.incrementer.H2KeyGenerator
+    #逻辑删除配置（下面3个配置）
+    logic-delete-value: 0
+    logic-not-delete-value: 1
+    configuration:
+    map-underscore-to-camel-case: true
+    cache-enabled: false
+beetl:
+  suffix: html
+
+# MailProperties
+
+# community
+due:
+  path:
+    domain: http://localhost:888
+
