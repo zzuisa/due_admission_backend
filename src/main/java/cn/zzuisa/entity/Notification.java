@@ -28,7 +28,7 @@ public class Notification extends Model<Notification> {
     private Date createTime;
     private String eventTitle;
     private String eventContent;
-    private String read;
+    private String isread;
 
     @Override
     protected Serializable pkVal() {

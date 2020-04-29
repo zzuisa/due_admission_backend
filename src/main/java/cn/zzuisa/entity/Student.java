@@ -27,17 +27,21 @@ public class Student extends Model<Student> {
     @TableId(value = "id", type = IdType.AUTO)
     private int id;
     private int roleId;
+    private int uId;
     private String name;
-    private Date birthday;
+    private String birthday;
     private String gender;
     private String cet4;
     private String cet6;
+    private String gerExam;
     private String phone;
     private String apsPassed;
     private String address;
     private String nationality;
+    private String saved;
+    private String avatar;
 
-    private int apsid;
+    private String apsid;
     private String apsAuthFile;
     private String examAuthFile;
     private String passport;

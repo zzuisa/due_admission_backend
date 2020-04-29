@@ -1,9 +1,11 @@
 package cn.zzuisa.log;
 
+import cn.zzuisa.config.TokenManager;
 import cn.zzuisa.entity.Account;
 import cn.zzuisa.log.annotation.BussinessLog;
 import cn.zzuisa.log.factory.LogTaskFactory;
 import cn.zzuisa.log.sub.LogManager;
+import cn.zzuisa.service.AccountService;
 import cn.zzuisa.utils.HostHolder;
 import cn.zzuisa.utils.kit.Context;
 import cn.zzuisa.utils.kit.IpUtil;
@@ -34,7 +36,8 @@ import java.util.Enumeration;
 public class LogAop {
     @Autowired
     HostHolder hostHolder;
-
+    @Autowired
+    AccountService accountService;
     private Logger log = LoggerFactory.getLogger(this.getClass());
 
     @Pointcut(value = "@annotation(cn.zzuisa.log.annotation.BussinessLog)")
@@ -43,6 +46,7 @@ public class LogAop {
 
     /**
      * ProceedingJoinPoint is only supported for around advice
+     *
      * @param point
      * @return
      * @throws Throwable
@@ -64,17 +68,17 @@ public class LogAop {
 
     private void handle(ProceedingJoinPoint point) throws Exception {
 
-    	HttpServletRequest request = Context.getRequest();
-    	String ip = IpUtil.getClientIp(request);
-    	String url = request.getRequestURL().toString();
+        HttpServletRequest request = Context.getRequest();
+        String ip = IpUtil.getClientIp(request);
+        String url = request.getRequestURL().toString();
 
-    	Enumeration<String> hn = request.getHeaderNames();
-    	while (hn.hasMoreElements()) {
-			String string = (String) hn.nextElement();
-			System.out.println(string + ": " + request.getHeader(string));
-		}
+        Enumeration<String> hn = request.getHeaderNames();
+        while (hn.hasMoreElements()) {
+            String string = (String) hn.nextElement();
+            System.out.println(string + ": " + request.getHeader(string));
+        }
 
-    	//获取拦截的方法名
+        //获取拦截的方法名
         Signature sig = point.getSignature();
         MethodSignature msig = null;
         if (!(sig instanceof MethodSignature)) {
@@ -86,9 +90,13 @@ public class LogAop {
         String methodName = currentMethod.getName();
 
         //如果当前用户未登录，不做日志
-        Account account =  hostHolder.getUser();
+        Account account = hostHolder.getUser();
+        String token = request.getHeader("token");
         if (null == account) {
-        	return;
+            account = accountService.getById(TokenManager.get(token));
+            if (account == null) {
+                return;
+            }
         }
         Long userId = Long.parseLong(account.getId().toString());
         //获取拦截方法的参数

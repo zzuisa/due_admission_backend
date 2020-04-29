@@ -12,7 +12,7 @@ public class MVCConfig implements WebMvcConfigurer {
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(new LoginInterceptor()).addPathPatterns("/**")
-                .excludePathPatterns("/member/login","/member/active/**","/member/join","/member/out","/file/**","/file","/error","/","/csrf",
+                .excludePathPatterns("/member/login","/member/password","/member/active/**","/member/join","/member/out","/file/**","/file","/error","/","/csrf",
                         "/invitation/page","/module/list","/static/**","/invitation/detail/{id}","/imgupload/**")
                 .excludePathPatterns("/swagger-resources/**", "/webjars/**", "/v2/**", "/swagger-ui.html/**","/config/**")
         .excludePathPatterns("/other/**","/member/zhu","/reply/list1","/module/new","/invitation/table2","/diss/list","/apply/list");

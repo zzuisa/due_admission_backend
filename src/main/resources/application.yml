@@ -1,7 +1,7 @@
 server:
   port: 888
-  servlet:
-    context-path: /due
+#  servlet:
+#    context-path: /due
 # 注释
 spring:
   thymeleaf:
@@ -58,7 +58,8 @@ spring:
         smtp:
           ssl:
             enable: true
-    #username: zzuisa.cn@gmmybatis-plus:
+    #username: zzuisa.cn@gmail.com
+mybatis-plus:
   configuration:
     call-setters-on-nulls: true
   mapperLocations: classpath*:cn/zzuisa/mapper/xml/*Mapper.xml

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.zzuisa.mapper.NotificationMapper">
+    <select id="pageEntity" resultType="java.util.HashMap">
+        SELECT
+            id,user_id,create_time,event_title,event_content,isread
+        FROM
+            notification
+        WHERE
+        1 = 1
+        <if test="u.userId != null">
+            and user_id = #{u.userId}
+        </if>
+        <if test="u.isread != null">
+        and isread = #{u.isread}
+        </if>
+        order by create_time desc
+    </select>
+</mapper>

@@ -26,7 +26,8 @@ public class TokenManager {
         return tokens;
     }
 
-    public static Long get(String token) {
-        return (Long) tokens.get(token.replaceAll("\"",""));
+    public static Integer get(String token) {
+        System.out.println("!!!!!!!!"+token);
+        return (Integer) tokens.get(token.replaceAll("\"",""));
     }
 }
