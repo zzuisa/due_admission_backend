@@ -25,6 +25,12 @@ public class R<T> {
 		r.setContent(content);
 		return r;
 	}
+
+	public static <Y> R<Y> error(Integer code,Y content) {
+		R<Y> r = new R<Y>(code);
+		r.setContent(content);
+		return r;
+	}
 	/**
 	 * 未登录
 	 * @param content

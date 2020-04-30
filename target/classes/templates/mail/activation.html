@@ -8,12 +8,17 @@
 <body>
 <div>
     <p>
-        <b th:text="${email}">xxx@xxx.com</b>, hello!
+        <b th:text="${email}">xxx@xxx.com</b>,
     </p>
     <p>
-        You are registering DUE-community, this is an activation email, please click
-        <a th:href="${url}">this link</a>,
-        to activate your mail!
+        You recently registered for <a href="http://35.239.14.95:8464/#/index">DUE</a> using this email address.
+        Please complete your registration by following the link below:
+        <p><a th:href="${url}" th:text="${url}"></a></p>
+        if you did not recently register, or believe you have received this email in error, please disregard this message.
+        <p>Thanks!</p>
+        <p>The DUE Team</p>
+        <p>Just so you know, if you did not register recently, your receiving this message means that someone else entered your email address while attempting to create an account on
+            <a href="http://35.239.14.95:8464/#/index">DUE</a>. They will not be able to complete the process.</p>
     </p>
 </div>
 </body>

@@ -71,7 +71,7 @@ public class MemberController {
         if (one == null) {
             return R.error("账号或密码错误");
         } else if (!one.getActivationCode().equals("ACTIVATED")) {
-            return R.error("未激活!");
+            return R.error(3,"未激活!");
         }
 
 //        if(one.getStatus() != 0) {
@@ -126,7 +126,7 @@ public class MemberController {
         String url = domain + contextPath + "/member/active/" + one.getId() + "/" + one.getActivationCode();
         context.setVariable("url", url);
         String content = templateEngine.process("/mail/activation", context);
-        mailClient.sendMail(one.getEmail(), "激活账号", content);
+        mailClient.sendMail(one.getEmail(), "Activate the account", content);
         return R.ok(account);
     }
 
