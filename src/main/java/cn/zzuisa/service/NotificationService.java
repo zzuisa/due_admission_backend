@@ -14,4 +14,6 @@ import java.util.Map;
 public interface NotificationService extends IService<Notification> {
     IPage<Map<String, Object>> pageEntity(IPage<Map<String, Object>> page, Notification notification);
 
+    int sendNotice(Notification notification);
+
 }

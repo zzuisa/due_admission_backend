@@ -24,7 +24,7 @@ public class Account extends Model<Account> {
 
     @TableId(value = "id", type = IdType.AUTO)
     private Integer id;
-    private int studentId;
+    private Integer studentId;
     private String username;
     private String password;
     private String email;

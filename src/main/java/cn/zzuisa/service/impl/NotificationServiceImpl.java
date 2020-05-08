@@ -25,4 +25,9 @@ public class NotificationServiceImpl extends ServiceImpl<NotificationMapper, Not
         return notificationMapper.pageEntity(page, notification);
     }
 
+    @Override
+    public int sendNotice(Notification notification) {
+        return notificationMapper.insert(notification);
+    }
+
 }

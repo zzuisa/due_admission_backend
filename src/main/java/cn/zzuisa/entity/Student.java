@@ -25,9 +25,9 @@ public class Student extends Model<Student> {
     private static final long serialVersionUID = 1L;
 
     @TableId(value = "id", type = IdType.AUTO)
-    private int id;
-    private int roleId;
-    private int uId;
+    private Integer id;
+    private Integer roleId;
+    private Integer uId;
     private String name;
     private String birthday;
     private String gender;
@@ -45,6 +45,7 @@ public class Student extends Model<Student> {
     private String apsAuthFile;
     private String examAuthFile;
     private String passport;
+    private String notify;
 
     @Override
     protected Serializable pkVal() {

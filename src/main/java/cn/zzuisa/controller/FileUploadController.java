@@ -1,27 +1,29 @@
 package cn.zzuisa.controller;
 
 import java.io.*;
+import java.util.Date;
 import java.util.UUID;
 
-import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import cn.zzuisa.base.R;
 import cn.zzuisa.config.TokenManager;
 import cn.zzuisa.entity.Account;
+import cn.zzuisa.entity.Files;
 import cn.zzuisa.log.annotation.BussinessLog;
 import cn.zzuisa.service.AccountService;
-import cn.zzuisa.utils.HostHolder;
+import cn.zzuisa.service.FilesService;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import org.thymeleaf.util.StringUtils;
 
 @Api(tags = "files upload API")
 @Controller
@@ -29,6 +31,8 @@ import io.swagger.annotations.ApiOperation;
 public class FileUploadController {
     @Autowired
     AccountService accountService;
+    @Autowired
+    FilesService filesService;
     private static final String[] IMGTYPE = {
             ".jpg", ".icon", ".png", ".jpeg", ".gif"
     };
@@ -96,6 +100,17 @@ public class FileUploadController {
         // 文件后缀
         String suffix = fileName.substring(fileName.lastIndexOf("."));
         return common(request, file, fileNameNoSuffix, suffix);
+    }
+    @ResponseBody
+    @PostMapping("/admin/upload")
+    public R sendFile(HttpServletRequest request, @RequestBody Files f) throws IOException {
+        Files old = filesService.getOne(new QueryWrapper<Files>().eq("student_id", f.getStudentId()).eq("type",f.getType()));
+        if (old==null) {
+            f.setCreateTime(new Date());
+            return R.ok(filesService.save(f));
+        }
+        old.setUpdateTime(new Date());
+        return R.ok(filesService.update(f, new QueryWrapper<Files>().eq("student_id", f.getStudentId()).eq("type",f.getType())));
     }
 
     @ResponseBody

@@ -1,6 +1,7 @@
 package cn.zzuisa.controller;
 
 
+import cn.zzuisa.base.PageRequest;
 import cn.zzuisa.base.R;
 import cn.zzuisa.config.TokenManager;
 import cn.zzuisa.entity.*;
@@ -13,6 +14,8 @@ import cn.zzuisa.utils.HostHolder;
 import cn.zzuisa.utils.MailClient;
 import cn.zzuisa.utils.kit.StringUtils;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,18 +43,18 @@ public class MemberController {
 
     @Autowired
     AccountService accountService;
-
     @Autowired
     MailClient mailClient;
-
     @Autowired
     TemplateEngine templateEngine;
     @Autowired
     StudentService studentService;
     @Autowired
-    StudentMapper studentMapper;
+    NotificationService notificationService;
     @Autowired
     HostHolder hostHolder;
+    @Autowired
+    FilesService filesService;
 
 
     @Value("${due.path.domain}")
@@ -71,7 +74,7 @@ public class MemberController {
         if (one == null) {
             return R.error("账号或密码错误");
         } else if (!one.getActivationCode().equals("ACTIVATED")) {
-            return R.error(3,"未激活!");
+            return R.error(3, "未激活!");
         }
 
 //        if(one.getStatus() != 0) {
@@ -103,7 +106,6 @@ public class MemberController {
         if (account.getPassword() == null) {
             return R.error("密码不能为空");
         }
-
         Account one = accountService.getOne(new QueryWrapper<Account>().eq("username", account.getUsername()));
         if (one != null) {
             return R.error("用户名已存在");
@@ -120,7 +122,13 @@ public class MemberController {
         account.setStudentId(student.getId());
         accountService.save(account);
         studentService.updateById(student.setUId(account.getId()));
-        System.out.printf("ac:"+student.getId());
+        System.out.printf("ac:" + student.getId());
+        notificationService.sendNotice(new Notification()
+                .setUserId(account.getId())
+                .setCreateTime(new Date())
+                .setEventTitle("Welcome to DUE, please perfect your information")
+                .setEventContent("Go to the Settings page to complete basic and advanced information")
+                .setIsread("0"));
 
         one = accountService.getOne(new QueryWrapper<Account>().eq("username", account.getUsername()));
         String url = domain + contextPath + "/member/active/" + one.getId() + "/" + one.getActivationCode();
@@ -146,27 +154,20 @@ public class MemberController {
     // 修改个人信息 头像 邮箱 电话 性别 昵称
     @PutMapping("/new")
     @BussinessLog(value = "Account#update profile")
-    public R update(@RequestBody Student account, HttpServletRequest request) {
+    public R update(@RequestBody Student student, HttpServletRequest request) {
         Integer userId = TokenManager.get(request.getHeader("token"));
-        Student student1 = studentService.getOne(new QueryWrapper<Student>().eq("u_id", userId));
-        student1.setPhone(account.getPhone());
-        student1.setNationality(account.getNationality());
-        student1.setGender(account.getGender());
-        student1.setName(account.getName());
-        student1.setAddress(account.getAddress());
-        student1.setCet4(account.getCet4());
-        student1.setCet6(account.getCet6());
-        student1.setApsAuthFile(account.getApsAuthFile());
-        student1.setPassport(account.getPassport());
-        student1.setBirthday(account.getBirthday());
-        student1.setGerExam(account.getGerExam());
-        student1.setExamAuthFile(account.getExamAuthFile());
-        student1.setApsid(account.getApsid());
-        student1.setApsPassed(account.getApsPassed());
-        student1.setAvatar(account.getAvatar());
-        student1.setSaved("y");
-        studentService.updateById(student1);
-        return R.ok(student1);
+        student.setId(userId);
+        student.setSaved("y");
+        student.setNotify("1");
+        return R.ok(studentService.update(student, new QueryWrapper<Student>().eq("u_id", userId)));
+    }
+
+    @PutMapping("/nofity")
+    public R notify(String notify, String uid, HttpServletRequest request) {
+        Student student = studentService.getOne(new QueryWrapper<Student>().eq("u_id", uid));
+        student.setNotify(notify);
+        studentService.updateById(student);
+        return R.ok(student);
     }
 
     // 退出登录
@@ -189,9 +190,14 @@ public class MemberController {
     }
 
     @GetMapping("/getfiles")
-    public R getFiles(HttpServletRequest request) {
+    public R getFiles(PageRequest pageRequest, HttpServletRequest request) {
         Integer uid = TokenManager.get((request.getHeader("token")));
         Map<String, Object> files = studentService.getFiles(uid);
-        return R.ok(files);
+        IPage<Files> page = new Page<>(pageRequest.getCurrent(), pageRequest.getSize());
+        IPage<Map<String, Object>> myfiles = filesService.pageMaps(page, new QueryWrapper<Files>().eq("student_id", studentService.getByUid(uid).getId()));
+        Map<String, Object> map = new HashMap<>();
+        map.put("uploaded", files);
+        map.put("myfiles", myfiles);
+        return R.ok(map);
     }
 }

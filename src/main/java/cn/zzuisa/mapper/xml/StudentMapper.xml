@@ -37,6 +37,7 @@
         aps_auth_file,
         exam_auth_file,
         passport,
+        notify,
         avatar
         FROM
         student

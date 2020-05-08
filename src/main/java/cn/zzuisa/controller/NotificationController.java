@@ -15,11 +15,10 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.Date;
 import java.util.Map;
 
 /**
@@ -49,6 +48,23 @@ public class NotificationController {
         IPage<Map<String, Object>> page = new Page<>(pageRequest.getCurrent(), pageRequest.getSize());
         IPage<Map<String, Object>> mapIPage = notificationService.pageEntity(page, notification);
         return R.ok(mapIPage);
+    }
+
+    @PostMapping("/send")
+    public R send(HttpServletRequest request, @RequestBody Notification notification) {
+        notification.setCreateTime(new Date());
+        notification.setIsread("0");
+        int k = notificationService.sendNotice(notification);
+        if (k > 0) {
+            return R.ok("success");
+        } else {
+            return R.error("operation failed");
+        }
+    }
+
+    @PutMapping("/update")
+    public R update(HttpServletRequest request, @RequestBody Notification notification) {
+        return R.ok(notificationService.updateById(notification));
     }
 
 }

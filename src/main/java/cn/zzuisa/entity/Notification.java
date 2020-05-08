@@ -23,8 +23,8 @@ public class Notification extends Model<Notification> {
     private static final long serialVersionUID = 1L;
 
     @TableId(value = "id", type = IdType.AUTO)
-    private int id;
-    private int userId;
+    private Integer id;
+    private Integer userId;
     private Date createTime;
     private String eventTitle;
     private String eventContent;

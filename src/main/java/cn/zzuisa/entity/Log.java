@@ -23,7 +23,7 @@ public class Log extends Model<Log> {
     private static final long serialVersionUID = 1L;
 
     @TableId(value = "id", type = IdType.AUTO)
-    private int id;
+    private Integer id;
     private String content;
     private String userId;
     private String ip;
