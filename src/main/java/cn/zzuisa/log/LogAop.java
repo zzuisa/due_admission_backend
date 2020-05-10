@@ -93,7 +93,11 @@ public class LogAop {
         Account account = hostHolder.getUser();
         String token = request.getHeader("token");
         if (null == account) {
-            account = accountService.getById(TokenManager.get(token));
+            if(token == null){
+                account = new Account().setUsername("Someone").setId(-1);
+            }else{
+                account = accountService.getById(TokenManager.get(token));
+            }
             if (account == null) {
                 return;
             }

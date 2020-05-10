@@ -64,11 +64,11 @@ public class FileUploadController {
         }
         return R.error("文件类型限定为.jpg,.icon,.png,.jpeg,.gif");
     }
-    @BussinessLog(value = "Account#user uploads files or images")
+
     public R<String> common(HttpServletRequest request, MultipartFile file, String fileNameNoSuffix, String suffix) throws IOException {
 //        String realPath = request.getServletContext().getRealPath("/fileupload");
-        String t = "/Users/frank/Desktop/bachelor-title/due_admission_backend/fileupload";
-        String realPath = "/Users/frank/Desktop/bachelor-title/due_admission_backend/fileupload/";
+        String t = "/Users/frank/Public/DUE/bachelor-title/due_admission_backend/fileupload";
+        String realPath = "/Users/frank/Public/DUE/bachelor-title/due_admission_backend/fileupload";
         // 存储路径
         File fileUploadPath = new File(realPath);
         if (!fileUploadPath.exists()) {
@@ -82,6 +82,7 @@ public class FileUploadController {
     @ResponseBody
     @ApiOperation("通用文件上传")
     @PostMapping("/common")
+    @BussinessLog(value = "Upload files or images#operation")
     public R<String> fileUpload(MultipartFile file, HttpServletRequest request) throws IllegalStateException, IOException {
         if (file == null) {
             return R.error("上传文件为空");
@@ -115,9 +116,10 @@ public class FileUploadController {
 
     @ResponseBody
     @GetMapping(value = "/fileupload/{path}", produces = MediaType.IMAGE_JPEG_VALUE)
+    @BussinessLog(value = "Download files or images#operation")
     public void img(HttpServletRequest request, HttpServletResponse response, @PathVariable String path) throws IOException {
-        String t = "/Users/frank/Desktop/bachelor-title/due_admission_backend/fileupload";
-        String realPath = "/Users/frank/Desktop/bachelor-title/due_admission_backend/fileupload/" + path;
+        String t = "/Users/frank/Public/DUE/bachelor-title/due_admission_backend/fileupload";
+        String realPath = "/Users/frank/Public/DUE/bachelor-title/due_admission_backend/fileupload/" + path;
 //        String realPath = request.getServletContext().getRealPath("/fileupload") + "/" + path ;
         System.out.println(realPath);
         File f = new File(realPath);

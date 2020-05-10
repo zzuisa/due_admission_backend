@@ -51,6 +51,7 @@ public class NotificationController {
     }
 
     @PostMapping("/send")
+    @BussinessLog(value = "send notification#operation")
     public R send(HttpServletRequest request, @RequestBody Notification notification) {
         notification.setCreateTime(new Date());
         notification.setIsread("0");

@@ -84,7 +84,7 @@ public class MemberController {
         hostHolder.setUser(one);
         TokenManager.put(token, one.getId());
         HashMap<String, Object> map = new HashMap<>();
-        if (one.getStudentId() != 0) {
+        if (one.getStudentId()!=null && one.getStudentId() != 0) {
             Student byId = studentService.getById(one.getStudentId());
             map.put("student", byId);
         }
@@ -158,7 +158,7 @@ public class MemberController {
         Integer userId = TokenManager.get(request.getHeader("token"));
         student.setId(userId);
         student.setSaved("y");
-        student.setNotify("1");
+        student.setNotify("0");
         return R.ok(studentService.update(student, new QueryWrapper<Student>().eq("u_id", userId)));
     }
 

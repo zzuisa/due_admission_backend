@@ -53,11 +53,24 @@ public class LogController {
 
     // 退出登录
     @GetMapping("/mylogs")
-    public R mylogs(HttpServletRequest request,PageRequest pageRequest) {
+    public R mylogs(HttpServletRequest request, PageRequest pageRequest) {
         Integer userid = TokenManager.get(request.getHeader("token"));
         IPage<Log> page = new Page<>(pageRequest.getCurrent(), pageRequest.getSize());
-        IPage<Map<String, Object>> logs = logService.pageMaps(page, new QueryWrapper<Log>().eq("user_id", userid).orderByDesc("create_time"));
+        IPage<Map<String, Object>> logs = null;
+        if (userid == 1) {
+
+        } else {
+            logs = logService.pageMaps(page, new QueryWrapper<Log>().eq("user_id", userid).orderByDesc("create_time"));
+        }
+
         return R.ok(logs);
     }
+
+    @GetMapping("/all")
+    public R pageAll(PageRequest pageRequest) {
+        IPage<Map<String, Object>> page = new Page<>(pageRequest.getCurrent(), pageRequest.getSize());
+        return R.ok(logService.getAllDetail(page));
+    }
+
 
 }

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.zzuisa.mapper.LogMapper">
+
+    <select id="getAllDetail" resultType="java.util.HashMap">
+        SELECT
+            a.username,b.*
+        FROM
+            account a
+            LEFT JOIN log b ON a.id = b.user_id
+        ORDER BY
+            b.id desc
+    </select>
+
+</mapper>

@@ -6,6 +6,7 @@ import cn.zzuisa.config.TokenManager;
 import cn.zzuisa.entity.Files;
 import cn.zzuisa.entity.Log;
 import cn.zzuisa.entity.Type;
+import cn.zzuisa.log.annotation.BussinessLog;
 import cn.zzuisa.service.FilesService;
 import cn.zzuisa.service.TypeService;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
@@ -13,6 +14,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import io.swagger.annotations.Api;
 import org.apache.ibatis.annotations.Delete;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -42,13 +44,15 @@ public class TypeController {
         return R.ok(types);
     }
     @PostMapping("add")
-    public R add(HttpServletRequest request,Type type) {
+    @BussinessLog(value = "add type#operation")
+    public R add(HttpServletRequest request,@RequestBody Type type) {
         type.setCreateTime(new Date());
         type.setUpdateTime(new Date());
         return R.ok(typeService.save(type));
     }
     @PutMapping("update")
-    public R update(HttpServletRequest request,Type type) {
+    @BussinessLog(value = "update type#operation")
+    public R update(HttpServletRequest request,@RequestBody Type type) {
         type.setUpdateTime(new Date());
         if(typeService.updateById(type)){
             return R.ok("success");
@@ -56,7 +60,8 @@ public class TypeController {
 
     }
     @DeleteMapping("delete")
-    public R delete(HttpServletRequest request, int id) {
+    @BussinessLog(value = "delete type#operation")
+    public R delete(HttpServletRequest request, @Param("id") Integer id) {
         if (filesService.list(new QueryWrapper<Files>().eq("id", id)).size() > 0) {
             return R.error("sorry, you can't remove the type while you are using it.");
         }
