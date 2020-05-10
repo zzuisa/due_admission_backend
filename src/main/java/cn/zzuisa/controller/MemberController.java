@@ -159,7 +159,12 @@ public class MemberController {
         student.setId(userId);
         student.setSaved("y");
         student.setNotify("0");
-        return R.ok(studentService.update(student, new QueryWrapper<Student>().eq("u_id", userId)));
+        if(studentService.update(student, new QueryWrapper<Student>().eq("u_id", userId))){
+
+            return R.ok(student);
+        }else{
+            return R.error("failed");
+        }
     }
 
     @PutMapping("/nofity")
