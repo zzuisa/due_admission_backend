@@ -28,6 +28,7 @@ public class Account extends Model<Account> {
     private String username;
     private String password;
     private String email;
+    private String salt;
     private String activationCode;
     private Date createTime;
 

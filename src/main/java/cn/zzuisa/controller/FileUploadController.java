@@ -15,10 +15,14 @@ import cn.zzuisa.log.annotation.BussinessLog;
 import cn.zzuisa.service.AccountService;
 import cn.zzuisa.service.FilesService;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import org.apache.tomcat.util.http.fileupload.RequestContext;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 import org.springframework.web.multipart.MultipartFile;
 
 import io.swagger.annotations.Api;
@@ -33,11 +37,13 @@ public class FileUploadController {
     AccountService accountService;
     @Autowired
     FilesService filesService;
+    @Value("${due.path.file-path}")
+    String filepath;
+    @Value("${due.path.domain}")
+    String domain;
     private static final String[] IMGTYPE = {
             ".jpg", ".icon", ".png", ".jpeg", ".gif"
     };
-    static String domain = "http://127.0.0.1:888";
-
     @ResponseBody
     @ApiOperation("图片文件上传")
     @PostMapping("/img")
@@ -66,11 +72,8 @@ public class FileUploadController {
     }
 
     public R<String> common(HttpServletRequest request, MultipartFile file, String fileNameNoSuffix, String suffix) throws IOException {
-//        String realPath = request.getServletContext().getRealPath("/fileupload");
-        String t = "/Users/frank/Public/DUE/bachelor-title/due_admission_backend/fileupload";
-        String realPath = "/Users/frank/Public/DUE/bachelor-title/due_admission_backend/fileupload";
         // 存储路径
-        File fileUploadPath = new File(realPath);
+        File fileUploadPath = new File(filepath);
         if (!fileUploadPath.exists()) {
             fileUploadPath.mkdirs();
         }
@@ -114,12 +117,14 @@ public class FileUploadController {
         return R.ok(filesService.update(f, new QueryWrapper<Files>().eq("student_id", f.getStudentId()).eq("type",f.getType())));
     }
 
+
     @ResponseBody
     @GetMapping(value = "/fileupload/{path}", produces = MediaType.IMAGE_JPEG_VALUE)
     @BussinessLog(value = "Download files or images#operation")
     public void img(HttpServletRequest request, HttpServletResponse response, @PathVariable String path) throws IOException {
         String t = "/Users/frank/Public/DUE/bachelor-title/due_admission_backend/fileupload";
-        String realPath = "/Users/frank/Public/DUE/bachelor-title/due_admission_backend/fileupload/" + path;
+        String realPath = filepath+ '/' + path;
+
 //        String realPath = request.getServletContext().getRealPath("/fileupload") + "/" + path ;
         System.out.println(realPath);
         File f = new File(realPath);

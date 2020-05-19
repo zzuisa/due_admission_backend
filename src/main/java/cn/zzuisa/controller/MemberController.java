@@ -6,18 +6,15 @@ import cn.zzuisa.base.R;
 import cn.zzuisa.config.TokenManager;
 import cn.zzuisa.entity.*;
 import cn.zzuisa.log.annotation.BussinessLog;
-import cn.zzuisa.mapper.StudentMapper;
-import cn.zzuisa.request.DissOtherDo;
 import cn.zzuisa.request.LoginMember;
 import cn.zzuisa.service.*;
 import cn.zzuisa.utils.HostHolder;
 import cn.zzuisa.utils.MailClient;
-import cn.zzuisa.utils.kit.StringUtils;
+import cn.zzuisa.utils.kit.HashKit;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
@@ -25,7 +22,6 @@ import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
 
 import javax.servlet.http.HttpServletRequest;
-import java.time.LocalDateTime;
 import java.util.*;
 
 /**
@@ -67,12 +63,18 @@ public class MemberController {
     @PostMapping("/login")
     @BussinessLog(value = "Login#account")
     public R login(@RequestBody LoginMember member, HttpServletRequest request) {
+        Account verify = accountService.getOne(new QueryWrapper<Account>().eq("username", member.getUsername()));
+        if (verify == null) {
+            return R.error("该用户不存在！");
+
+        }
+        String salt = verify.getSalt();
         QueryWrapper<Account> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("username", member.getUsername())
-                .eq("password", member.getPassword());
+                .eq("password", HashKit.md5(member.getPassword()+salt));
         Account one = accountService.getOne(queryWrapper);
         if (one == null) {
-            return R.error("账号或密码错误");
+            return R.error(4,"账号或密码错误");
         } else if (!one.getActivationCode().equals("ACTIVATED")) {
             return R.error(3, "未激活!");
         }
@@ -116,6 +118,8 @@ public class MemberController {
         // http://localhost:8080/community/activation/101/code
         account.setActivationCode("DUE" + (UUID.randomUUID().toString() + UUID.randomUUID()).replace("-", ""));
         account.setCreateTime(new Date());
+        account.setSalt(HashKit.generateSalt(16));
+        account.setPassword(HashKit.md5(account.getPassword() + account.getSalt()));
         Student student = new Student();
         student.setAvatar("https://preview.pro.loacg.com/avatar2.jpg");
         studentService.save(student);
