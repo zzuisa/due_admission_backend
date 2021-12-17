@@ -27,7 +27,7 @@ spring:
     time-zone: GMT+8
   datasource:
     name: test
-    url: jdbc:mysql://127.0.0.1:3306/due_admission?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull
+    url: jdbc:mysql://localhost:3306/due_admission?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&max_allowed_packet=15728640&useSSL=false
     username: root
     password: sa0230**
     type: com.alibaba.druid.pool.DruidDataSource
@@ -92,5 +92,5 @@ beetl:
 due:
   path:
     domain: http://localhost:888
-    file-path: /Users/frank/Public/DUE/bachelor-title/due_admission_backend/fileupload
+    file-path: /Users/ao/Public/DUE/考试/2019-下/bachelor-title/due_admission_backend/fileupload
 

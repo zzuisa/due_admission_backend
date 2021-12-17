@@ -12,9 +12,7 @@ public class demo {
     public static void main(String[] args) {
         String salt = HashKit.generateSalt(16);
         System.out.println(HashKit.generateSalt(16));
-        System.out.println(HashKit.md5("123bdd6797702c2412c7bd9816d8b311252"));
-        System.out.println(((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()));
-
+        System.out.println(HashKit.md5("admin8c4517ac78c254806a3d8852d46ab2d5"));
 
     }
 }

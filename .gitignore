@@ -5,6 +5,7 @@
 .springBeans
 .sts4-cache
 
+.DS_Store
 ### IntelliJ IDEA ###
 .idea
 *.iws
@@ -18,8 +19,8 @@
 /nbdist/
 /.nb-gradle/
 /build/
-/target/
-
+/target
+*.class
 # Compiled class file
 *.class
 

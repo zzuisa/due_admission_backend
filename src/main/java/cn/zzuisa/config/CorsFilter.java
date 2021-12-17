@@ -27,7 +27,6 @@ import org.springframework.web.context.request.ServletRequestAttributes;
  * @version
  * @since 2016年6月19日
  */
-@Component
 @WebFilter(urlPatterns="/", filterName="cors")
 public class CorsFilter implements Filter {
 
